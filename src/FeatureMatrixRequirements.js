@@ -97,7 +97,7 @@ export default class FeatureMatrixRequirements {
 				versionSupport.features.push({
 					name: feature.humanReadableName,
 					support: feature.getBrowserSupport(browser, i)
-				});
+				})
 			});
 
 			support.push(versionSupport);

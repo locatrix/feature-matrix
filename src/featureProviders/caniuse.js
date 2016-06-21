@@ -1,43 +1,62 @@
-import $ from 'jquery';
+import xhr from 'xhr';
 import { parseBrowserName } from '../browsers';
 
 export default function caniuseProvider(featureName, onComplete) {
 	console.log('caniuse looking up', featureName);
 
-	$.ajax({
-		url: 'http://api.browserfeatures.io/v1/feature/' + featureName,
-		error: function (xhr, textStatus, errorThrown) {
-			onComplete({ status: textStatus, error: errorThrown });
-		},
-		success: function (data) {
-			if (data.error) {
-				onComplete(data);
-			} else {
-				// normalise the caniuse browser information into something 
-				// we can deal with
-				var res = {};
+	xhr({
+		uri: 'http://cdn.rawgit.com/Fyrd/caniuse/master/features-json/' + featureName + '.json',
+		useXDR: true
+	}, function (err, resp, body) {
+		if (err) {
+			onComplete({ statusCode: err.statusCode, error: err.body});
+		} else {
+			var data = JSON.parse(body);
 
-				for (var key in data.browsers) {
-					if (!data.browsers.hasOwnProperty(key)) {
-						continue;
-					}
+			// normalise the caniuse browser information into something 
+			// we can deal with
+			var res = {};
 
-					var parsed = parseBrowserName(key);
+			for (const key of Object.keys(data.stats)) {
+				const parsed = parseBrowserName(key);
 
-					if (!parsed) {
-						continue;
-					}
-
-					var info = data.browsers[key];
-
-					res[parsed] = {
-						supported: info.supported,
-						since: info.since
-					};
+				if (!parsed) {
+					continue;
 				}
 
-				onComplete(null, res);
+				if (res[parsed]) {
+					throw new Error('duplicate browser was parsed');
+				}
+
+				const browserInfo = data.stats[key];
+				let supported = false;
+				let minVersion = Number.MAX_VALUE;
+				let maxVersion = Number.MIN_VALUE;
+
+				for (const versionStr of Object.keys(browserInfo)) {
+					const value = browserInfo[versionStr];
+
+					if (value[0] != 'y' && value[0] != 'a') {
+						continue; // not supported
+					}
+
+					// either fully or partially supported, we treat both as
+					// being supported and rely on users to add blacklist
+					// entries for the times where this assumption isn't ok
+					supported = true;
+					const version = parseFloat(versionStr);
+					minVersion = Math.min(version, minVersion);
+					maxVersion = Math.max(version, maxVersion);
+				}
+
+				res[parsed] = { supported: supported };
+
+				if (supported) {
+					res[parsed].since = minVersion;
+				}
 			}
+
+			onComplete(null, res);
 		}
 	});
 }

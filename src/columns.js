@@ -21,7 +21,7 @@ export function pivot(columns, numRows) {
 function combineColumnsIntoGroup(columns) {
 	if (columns.length == 1) {
 		return columns[0];
-	} else if (columns.length == 2) {
+	} else if (columns.length == 2 && !columns[columns.length -1].isNewest) {
 		var versions = columns.map(function (c) { return c.version; }).join(", ");
 
 		return {
@@ -30,6 +30,14 @@ function combineColumnsIntoGroup(columns) {
 			features: columns[0].features
 		};
 
+	} else if (columns.length == 2 && columns[columns.length -1].isNewest) {
+		// special case for only two columns if they're the two most recent versions
+		// (instead of X,Y we show X+)
+		return {
+			name: columns[0].name,
+			version: columns[0].version + "+",
+			features: columns[0].features
+		};
 	} else {
 		var version = columns[0].version + " - " + columns[columns.length - 1].version;
 

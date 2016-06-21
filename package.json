@@ -20,6 +20,7 @@
     "webpack": "^1.13.1"
   },
   "dependencies": {
-    "jquery": "^1.12.4"
+    "jquery": "^1.12.4",
+    "xhr": "^2.2.0"
   }
 }

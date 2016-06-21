@@ -2,6 +2,8 @@
 // versions of browsers. This uses a small DSL that allows for things like
 // "IE 6-8", "Chrome 50+", "Firefox <5". This file contains a recursive
 // descent parser for this grammar.
+//
+// The same grammar is used when referring to plugins, like "Flash 9+".
 
 // small wrapper for an indexed string that we can pull characters from
 class ParserInput {
@@ -57,7 +59,7 @@ function parseNumber(input) {
 	}
 }
 
-function parseBrowserName(input) {
+function parseProductName(input) {
 	return parseRepeated(input, /[a-zA-Z]/);
 }
 
@@ -106,11 +108,11 @@ function parseVersionString(input) {
 	};
 }
 
-export default function parseBrowserString(str) {
+export default function parseProductVersionString(str) {
 	let input = new ParserInput(str);
-	let browser = parseBrowserName(input);
+	let product = parseProductName(input);
 
-	if (!browser) {
+	if (!product) {
 		return null;
 	}
 
@@ -129,5 +131,5 @@ export default function parseBrowserString(str) {
 		return null;
 	}
 
-	return { browser, versions };
+	return { product, versions };
 }
