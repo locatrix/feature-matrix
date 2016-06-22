@@ -10,7 +10,8 @@ export const plugins = {
 			'IE 6+',
 			'Chrome 5+',
 			'Firefox',
-			'Edge'
+			'Edge',
+			'Safari'
 		]),
 
 		'matches': [

@@ -35,6 +35,15 @@ export const browsers = {
 			/^firefox$/i,
 		],
 		'minVersion': 2
+	},
+	'safari': {
+		'icon': 'https://www.browserfeatures.io/images/safari/safari_128x128.png',
+		'name': 'Safari',
+		'shortName': 'Safari',
+		'matches': [
+			/^safari$/i,
+		],
+		'minVersion': 1
 	}
 };
 

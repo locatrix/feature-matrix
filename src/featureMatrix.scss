@@ -1,0 +1,60 @@
+.feature-matrix {
+	font-family: sans-serif;
+
+	table {
+		border-collapse: collapse;
+		border: 1px solid #ddd;
+
+		th, td {
+			border: 1px solid #ddd;
+			border-spacing: 0;
+		}
+
+		th.feature {
+
+		}
+
+		th.browser {
+			img {
+				width: 32px;
+				height: 32px;
+				padding-bottom: 3px;
+			}
+
+			padding: 5px;
+		}
+
+		th.version {
+			padding: 5px;
+		}
+
+		th.browser, th.version, td.support {
+			text-align: center;
+		}
+
+		td.feature {
+			padding: 5px;
+		}
+
+		td.support {
+			padding: 5px 8px;
+			border: none;
+
+			&.supported {
+				background: #39b54a;
+			}
+
+			&.unsupported {
+				background: #c44230;
+			}
+
+			&.unknown {
+				background: #EEEEEE;
+			}
+		}
+	}
+	
+	div.conditions {
+
+	}
+}

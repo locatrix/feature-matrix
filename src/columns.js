@@ -21,21 +21,13 @@ export function pivot(columns, numRows) {
 function combineColumnsIntoGroup(columns) {
 	if (columns.length == 1) {
 		return columns[0];
-	} else if (columns.length == 2 && !columns[columns.length -1].isNewest) {
-		var versions = columns.map(function (c) { return c.version; }).join(", ");
-
-		return {
-			name: columns[0].name,
-			version: versions,
-			features: columns[0].features
-		};
-
-	} else if (columns.length == 2 && columns[columns.length -1].isNewest) {
+	}  else if (columns.length == 2 && columns[columns.length -1].isNewest) {
 		// special case for only two columns if they're the two most recent versions
 		// (instead of X,Y we show X+)
 		return {
 			name: columns[0].name,
 			version: columns[0].version + "+",
+			icon: columns[0].icon,
 			features: columns[0].features
 		};
 	} else {
@@ -52,6 +44,7 @@ function combineColumnsIntoGroup(columns) {
 		return {
 			name: columns[0].name,
 			version: version,
+			icon: columns[0].icon,
 			features: columns[0].features
 		};
 	}

@@ -45,6 +45,10 @@ export default function caniuseProvider(featureName, onComplete) {
 					// entries for the times where this assumption isn't ok
 					supported = true;
 					const version = parseFloat(versionStr);
+					if (isNaN(version)) {
+						continue;
+					}
+
 					minVersion = Math.min(version, minVersion);
 					maxVersion = Math.max(version, maxVersion);
 				}

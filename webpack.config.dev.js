@@ -1,5 +1,6 @@
 var path = require("path");
 var webpack = require('webpack');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var entries = [];
 var devtool = 'source-map';
 
@@ -20,9 +21,14 @@ module.exports = {
                 include: /\.(js|jsx)$/,
                 loaders: ["babel"],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!sass-loader")
             }
         ]
     },
+
     resolve: {
 		modulesDirectories: [
 			"src",
@@ -30,4 +36,8 @@ module.exports = {
 		],
 		extensions: ["", ".json", ".js", ".jsx"]
 	},
+
+    plugins: [
+        new ExtractTextPlugin("[name].css")
+    ]
 };

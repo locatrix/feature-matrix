@@ -4,6 +4,26 @@ import { browsers } from './browsers';
 import FeatureMatrixRequirements from './FeatureMatrixRequirements';
 import { pivot, groupColumns } from './columns';
 
+require('./featureMatrix.scss')
+
+function getBrowsers(columns) {
+	var browsers = [];
+
+	for (let c of columns) {
+		if (browsers.length == 0 || browsers[browsers.length - 1].name != c.name) {
+			browsers.push({
+				name: c.name,
+				icon: c.icon,
+				span: 1
+			});
+		} else {
+			browsers[browsers.length - 1].span += 1;
+		}
+	}
+
+	return browsers;
+}
+
 // can't use export default syntax due to UMD library shenanigans with webpack,
 // we set module.exports at the bottom of the file instead.
 class FeatureMatrix {
@@ -28,7 +48,9 @@ class FeatureMatrix {
 	}
 
 	render() {
-		let table = $("<table>");
+		this.mountpoint.addClass("feature-matrix");
+
+		let table = $('<table>');
 		let columns = [];
 
 		Object.keys(browsers).forEach((browser) => {
@@ -41,9 +63,20 @@ class FeatureMatrix {
 		let rows = pivot(columns, this.requirements.features.length);
 
 		let header = $("<thead>");
-		header.append("<th>" + this.featureColumnLabel + "</th>");
+		let browserHeaderRow = $("<tr>");
+		let versionHeaderRow = $("<tr>");
 
-		columns.forEach(col => header.append("<th>" + col.name + " " + col.version + "</th>"));
+		header.append(browserHeaderRow);
+		header.append(versionHeaderRow);
+
+		browserHeaderRow.append('<th rowspan="2" class="feature">' + this.featureColumnLabel + "</th>");
+
+		getBrowsers(columns).forEach((b) => {
+			browserHeaderRow.append('<th colspan="' + b.span + '" class="browser"><img src="' + b.icon + '" alt="" /><br />' + b.name + "</th>")
+		});
+
+		// the image is purely decorative, so we use an empty alt="" attribute
+		columns.forEach(col => versionHeaderRow.append('<th class="version">' + col.version + "</th>"));
 
 		table.append(header);
 
@@ -70,16 +103,16 @@ class FeatureMatrix {
 
 		rows.forEach((row) => {
 			let tr = $("<tr>");
-			tr.append("<td>" + row.feature + "</td>");
+			tr.append('<td class="feature">' + row.feature + "</td>");
 
 			row.support.forEach((s) => {
 				switch (s.support) {
 					case 'supported':
-						tr.append("<td>" + this.supportedText + "</td>");
+						tr.append('<td class="support supported">' + this.supportedText + "</td>");
 						break;
 
 					case 'unsupported':
-						tr.append("<td>" + this.unsupportedText + "</td>");
+						tr.append('<td class="support unsupported">' + this.unsupportedText + "</td>");
 						break;
 
 					case 'conditional': {
@@ -92,12 +125,12 @@ class FeatureMatrix {
 							superscripts.push('*');
 						}
 
-						tr.append("<td>" + this.supportedText + "<sup>" + superscripts.join('') + "</sup></td>");
+						tr.append('<td class="support supported conditionally"><span>' + this.supportedText + "</span><sup>" + superscripts.join('') + "</sup></td>");
 						break;
 					}
 
 					default:
-						tr.append("<td>" + this.unknownText + "</td>");
+						tr.append('<td class="support unknown">' + this.unknownText + "</td>");
 						break;
 				}
 			});

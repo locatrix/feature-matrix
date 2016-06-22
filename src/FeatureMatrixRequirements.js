@@ -87,6 +87,7 @@ export default class FeatureMatrixRequirements {
 			var versionSupport = {
 				name: browsers[browser].shortName,
 				version: "" + i,
+				icon: browsers[browser].icon,
 				nextVersion: "" + (i + 1),
 				isOldest: (i == minVersion),
 				isNewest: (i == maxVersion),
