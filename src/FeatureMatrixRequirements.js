@@ -78,14 +78,14 @@ export default class FeatureMatrixRequirements {
 		}
 	}
 
-	getBrowserSupport(browser) {
+	getBrowserSupport(browser, pluginRequirementGenerator) {
 		var support = [];
 		var maxVersion = this.browsers[browser];
 		var minVersion = browsers[browser].minVersion || 1;
 
 		for (var i = minVersion; i <= maxVersion; ++i) {
 			var versionSupport = {
-				name: browser,
+				name: browsers[browser].shortName,
 				version: "" + i,
 				nextVersion: "" + (i + 1),
 				isOldest: (i == minVersion),
@@ -96,7 +96,7 @@ export default class FeatureMatrixRequirements {
 			this.features.forEach(function (feature) {
 				versionSupport.features.push({
 					name: feature.humanReadableName,
-					support: feature.getBrowserSupport(browser, i)
+					support: feature.getBrowserSupport(browser, i, pluginRequirementGenerator)
 				})
 			});
 

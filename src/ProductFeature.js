@@ -52,7 +52,7 @@ export default class ProductFeature {
 		}
 	}
 
-	getBrowserSupport(name, version) {
+	getBrowserSupport(name, version, pluginRequirementGenerator) {
 		// check the blacklist/whitelist for explicit support indicators.
 		// if we have those we can uncondionally support/not support the browser.
 		const explicitSupport = this.supportList.check(name, version);
@@ -91,7 +91,7 @@ export default class ProductFeature {
 				}
 			}
 
-			return { support: 'conditional', conditions: supportedPlugins.map(p => 'Requires installation of ' + p.name + ' ' + p.requiredVersion)}
+			return { support: 'conditional', conditions: supportedPlugins.map(p => pluginRequirementGenerator(p.name, p.requiredVersion))}
 		}
 
 		// do we required plugins which are explicitly not supported in this browser?
