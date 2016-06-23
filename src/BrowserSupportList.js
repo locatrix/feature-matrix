@@ -1,5 +1,4 @@
-import { parseBrowserName, browsers } from './browsers';
-import parseProductVersionString from './parseProductVersionString';
+import { parseBrowserVersionString, browsers } from './browsers';
 
 export default class BrowserSupportList {
 	constructor(blacklist, whitelist) {
@@ -12,21 +11,15 @@ export default class BrowserSupportList {
 		} else {
 			this.blacklistAll = false;
 
+			if (blacklist && (typeof blacklist === 'string' || blacklist instanceof String)) {
+				blacklist = [ blacklist ];
+			}
+
 			if (blacklist) {
 				this.blacklist = {};
 
 				for (let entry of blacklist) {
-					let parsed = parseProductVersionString(entry);
-
-					if (!parsed) {
-						throw new Error('unable to parse browser product/version string');
-					}
-
-					parsed.product = parseBrowserName(parsed.product);
-
-					if (!parsed.product) {
-						throw new Error('browser ' + entry + ' is unknown');
-					}
+					let parsed = parseBrowserVersionString(entry);
 
 					if (this.blacklist[parsed.product]) {
 						throw new Error("can't have multiple blacklist entries for the same product");
@@ -42,21 +35,15 @@ export default class BrowserSupportList {
 		} else {
 			this.whitelistAll = false;
 
+			if (whitelist && (typeof whitelist === 'string' || whitelist instanceof String)) {
+				whitelist = [ whitelist ];
+			}
+
 			if (whitelist) {
 				this.whitelist = {};
 
 				for (let entry of whitelist) {
-					var parsed = parseProductVersionString(entry);
-
-					if (!parsed) {
-						throw new Error('unable to parse browser product/version string');
-					}
-
-					parsed.product = parseBrowserName(parsed.product);
-
-					if (!parsed.product) {
-						throw new Error('browser ' + entry + ' is unknown');
-					}
+					let parsed = parseBrowserVersionString(entry);
 
 					if (this.whitelist[parsed.product]) {
 						throw new Error("can't have multiple whitelist entries for the same product");

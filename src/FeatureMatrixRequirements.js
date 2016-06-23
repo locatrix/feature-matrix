@@ -1,7 +1,9 @@
 import $ from 'jquery';
 import ProductFeature from './ProductFeature';
+import BrowserSupportList from './BrowserSupportList';
 import browserFeatureProviders from './featureProviders';
 import { parseBrowserName, browsers } from './browsers';
+import { getBrowserNotes } from './notes';
 
 export default class FeatureMatrixRequirements {
 	constructor(requirements) {
@@ -10,6 +12,14 @@ export default class FeatureMatrixRequirements {
 		this.numLookups = 0;
 		this.lookupsCompleted = 0;
 		this.browsers = {};
+
+		if (requirements.forcePartialSupport) {
+			this.forcePartialList = new BrowserSupportList(null, requirements.forcePartialSupport);
+		}
+
+		if (requirements.forceUnsupported) {
+			this.forceUnsupportedList = new BrowserSupportList(null, requirements.forceUnsupported);
+		}
 
 		++this.numLookups;
 		$.ajax({
@@ -78,6 +88,22 @@ export default class FeatureMatrixRequirements {
 		}
 	}
 
+	getBrowserNotesFromSupport(name, version, supportLevel) {
+		if (!this.requirements.notes) {
+			return [];
+		}
+
+		if (supportLevel == 'supported') {
+			return getBrowserNotes(this.requirements.notes.supported, name, version);
+		} else if (supportLevel == 'partial') {
+			return getBrowserNotes(this.requirements.notes.partiallySupported, name, version);
+		} else if (supportLevel == 'unsupported') {
+			return getBrowserNotes(this.requirements.notes.unsupported, name, version);
+		} else {
+			return getBrowserNotes(this.requirements.notes.unknown, name, version);
+		}
+	}
+
 	getBrowserSupport(browser, pluginRequirementGenerator) {
 		var support = [];
 		var maxVersion = this.browsers[browser];
@@ -94,11 +120,29 @@ export default class FeatureMatrixRequirements {
 				features: []
 			};
 
-			this.features.forEach(function (feature) {
-				versionSupport.features.push({
-					name: feature.humanReadableName,
-					support: feature.getBrowserSupport(browser, i, pluginRequirementGenerator)
-				})
+			this.features.forEach((feature) => {
+				let column = null;
+
+				if (this.forceUnsupportedList && this.forceUnsupportedList.check(browser, i)) {
+					column = {
+						name: feature.humanReadableName,
+						support: { support: 'unsupported', conditions: feature.getNotes() }
+					};
+				} else {
+					column = {
+						name: feature.humanReadableName,
+						support: feature.getBrowserSupport(browser, i, pluginRequirementGenerator)
+					};
+				}
+
+				// what have I done
+				if (column.support.support == 'supported' && this.forcePartialList && this.forcePartialList.check(browser, i)) {
+					column.support.support = 'partial';
+				}
+
+				column.support.conditions = column.support.conditions.concat(this.getBrowserNotesFromSupport(browser, i, column.support.support));
+
+				versionSupport.features.push(column);
 			});
 
 			support.push(versionSupport);

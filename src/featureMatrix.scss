@@ -3,10 +3,10 @@
 
 	table {
 		border-collapse: collapse;
-		border: 1px solid #ddd;
+		border: 1px solid #bbb;
 
 		th, td {
-			border: 1px solid #ddd;
+			border: 1px solid #bbb;
 			border-spacing: 0;
 		}
 
@@ -21,11 +21,12 @@
 				padding-bottom: 3px;
 			}
 
-			padding: 5px;
+			padding: 5px 10px;
 		}
 
 		th.version {
 			padding: 5px;
+			font-weight: normal;
 		}
 
 		th.browser, th.version, td.support {
@@ -41,11 +42,15 @@
 			border: none;
 
 			&.supported {
-				background: #39b54a;
+				background: mix(white, #39b54a, 20%);
+			}
+
+			&.partial {
+				background: mix(white, #c7c933, 20%);
 			}
 
 			&.unsupported {
-				background: #c44230;
+				background: mix(white, #c44230, 20%);
 			}
 
 			&.unknown {

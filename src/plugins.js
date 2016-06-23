@@ -15,7 +15,7 @@ export const plugins = {
 		]),
 
 		'matches': [
-			/^Flash$/gi,
+			/^Flash$/i,
 		],
 	}
 };

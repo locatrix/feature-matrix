@@ -1,3 +1,5 @@
+import parseProductVersionString from './parseProductVersionString';
+
 export const browsers = {
 	'chrome': {
 		'icon': 'https://www.browserfeatures.io/images/chrome/chrome_128x128.png',
@@ -59,4 +61,20 @@ export function parseBrowserName(name) {
 	}
 
 	return null;
+}
+
+export function parseBrowserVersionString(str) {
+	let parsed = parseProductVersionString(str);
+
+	if (!parsed) {
+		throw new Error('unable to parse browser product/version string');
+	}
+
+	parsed.product = parseBrowserName(parsed.product);
+
+	if (!parsed.product) {
+		throw new Error('browser ' + str + ' is unknown');
+	}
+
+	return parsed;
 }
