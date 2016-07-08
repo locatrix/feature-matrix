@@ -11,7 +11,8 @@ export const plugins = {
 			'Chrome 5+',
 			'Firefox',
 			'Edge',
-			'Safari'
+			'Safari',
+			'Opera'
 		]),
 
 		'matches': [

@@ -2,6 +2,7 @@ import $ from 'jquery';
 import ProductFeature from './ProductFeature';
 import BrowserSupportList from './BrowserSupportList';
 import browserFeatureProviders from './featureProviders';
+import parseCaniuseBrowserVersion from './parseCaniuseBrowserVersion';
 import { parseBrowserName, browsers } from './browsers';
 import { getBrowserNotes } from './notes';
 
@@ -23,7 +24,7 @@ export default class FeatureMatrixRequirements {
 
 		++this.numLookups;
 		$.ajax({
-			url: 'http://api.browserfeatures.io/v1/browser/stable',
+			url: 'http://cdn.rawgit.com/Fyrd/caniuse/master/sample-data.json',
 			error: (xhr, textStatus, errorThrown) => {
 				throw new Error('failed to lookup browsers');
 			},
@@ -31,13 +32,24 @@ export default class FeatureMatrixRequirements {
 				if (data.error) {
 					throw new Error('failed to lookup browsers');
 				} else {
-					Object.keys(data.browsers).forEach((browser) => {
+					Object.keys(data.stats).forEach((browser) => {
 						var parsed = parseBrowserName(browser);
 						if (!parsed) {
 							return;
 						}
 
-						this.browsers[parsed] = data.browsers[browser];
+						var versions = [];
+
+						Object.keys(data.stats[browser]).forEach((version) => {
+							parseCaniuseBrowserVersion('' + version, (v) => {
+								if (versions.indexOf(v) == -1) {
+									versions.push(v);
+								}
+							});
+						});
+
+						versions.sort((a, b) => a - b);
+						this.browsers[parsed] = versions;
 					});
 
 					this.lookupCompleted();
@@ -106,24 +118,30 @@ export default class FeatureMatrixRequirements {
 
 	getBrowserSupport(browser, pluginRequirementGenerator) {
 		var support = [];
-		var maxVersion = this.browsers[browser];
-		var minVersion = browsers[browser].minVersion || 1;
+		var versions = this.browsers[browser];
+		var minVersion = browsers[browser].minVersion || versions[0];
+		var maxVersion = versions[versions.length - 1];
 
-		for (var i = minVersion; i <= maxVersion; ++i) {
+		versions.forEach((version, i) => {
+			if (version < minVersion) {
+				return;
+			}
+
 			var versionSupport = {
 				name: browsers[browser].shortName,
-				version: "" + i,
+				version: "" + version,
 				icon: browsers[browser].icon,
-				nextVersion: "" + (i + 1),
-				isOldest: (i == minVersion),
-				isNewest: (i == maxVersion),
+				prevVersion: versions[i - 1],
+				nextVersion: versions[i + 1],
+				isOldest: (version == minVersion),
+				isNewest: (version == maxVersion),
 				features: []
 			};
 
 			this.features.forEach((feature) => {
 				let column = null;
 
-				if (this.forceUnsupportedList && this.forceUnsupportedList.check(browser, i)) {
+				if (this.forceUnsupportedList && this.forceUnsupportedList.check(browser, version)) {
 					column = {
 						name: feature.humanReadableName,
 						support: { support: 'unsupported', conditions: feature.getNotes() }
@@ -131,22 +149,22 @@ export default class FeatureMatrixRequirements {
 				} else {
 					column = {
 						name: feature.humanReadableName,
-						support: feature.getBrowserSupport(browser, i, pluginRequirementGenerator)
+						support: feature.getBrowserSupport(browser, version, pluginRequirementGenerator)
 					};
 				}
 
 				// what have I done
-				if (column.support.support == 'supported' && this.forcePartialList && this.forcePartialList.check(browser, i)) {
+				if (column.support.support == 'supported' && this.forcePartialList && this.forcePartialList.check(browser, version)) {
 					column.support.support = 'partial';
 				}
 
-				column.support.conditions = column.support.conditions.concat(this.getBrowserNotesFromSupport(browser, i, column.support.support));
+				column.support.conditions = column.support.conditions.concat(this.getBrowserNotesFromSupport(browser, version, column.support.support));
 
 				versionSupport.features.push(column);
 			});
 
 			support.push(versionSupport);
-		}
+		});
 
 		return support;
 	}

@@ -73,7 +73,7 @@ class FeatureMatrix {
 		browserHeaderRow.append('<th rowspan="2" class="feature">' + this.featureColumnLabel + "</th>");
 
 		getBrowsers(columns).forEach((b) => {
-			browserHeaderRow.append('<th colspan="' + b.span + '" class="browser"><img src="' + b.icon + '" alt="" /><br />' + b.name + "</th>")
+			browserHeaderRow.append('<th colspan="' + b.span + '" class="browser"><img src="' + b.icon + '" alt="" /><br />' + b.name.replace(/\s+/g, '<br />') + "</th>")
 		});
 
 		// the image is purely decorative, so we use an empty alt="" attribute

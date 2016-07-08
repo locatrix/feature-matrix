@@ -3,10 +3,14 @@
 
 	table {
 		border-collapse: collapse;
-		border: 1px solid #bbb;
+		border: 1px solid #acacac;
+
+		th {
+			background: darken(white, 8%);
+		}
 
 		th, td {
-			border: 1px solid #bbb;
+			border: 1px solid #acacac;
 			border-spacing: 0;
 		}
 

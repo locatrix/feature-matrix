@@ -44,8 +44,39 @@ export const browsers = {
 		'shortName': 'Safari',
 		'matches': [
 			/^safari$/i,
-		],
-		'minVersion': 1
+		]
+	},
+	'opera': {
+		'icon': 'https://www.browserfeatures.io/images/opera/opera_128x128.png',
+		'name': 'Opera',
+		'shortName': 'Opera',
+		'matches': [
+			/^opera$/i,
+		]
+	},
+	'ios': {
+		'icon': 'https://www.browserfeatures.io/images/safari-ios/safari-ios_128x128.png',
+		'name': 'iOS Safari',
+		'shortName': 'iOS',
+		'matches': [
+			/^ios_saf$/i,
+		]
+	},
+	'android-browser': {
+		'icon': 'http://cdn.rawgit.com/alrra/browser-logos/master/android/android_128x128.png',
+		'name': 'Android Browser',
+		'shortName': 'Android Browser',
+		'matches': [
+			/^android$/i,
+		]
+	},
+	'android-chrome': {
+		'icon': 'https://www.browserfeatures.io/images/chrome-android/chrome-android_128x128.png',
+		'name': 'Android Chrome',
+		'shortName': 'Android Chrome',
+		'matches': [
+			/^and_chr$/i,
+		]
 	}
 };
 

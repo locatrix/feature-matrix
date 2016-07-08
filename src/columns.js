@@ -18,9 +18,35 @@ export function pivot(columns, numRows) {
 	return rows;
 }
 
+function columnsAreMajorVersion(columns) {
+	let first = columns[0];
+	let last = columns[columns.length - 1];
+
+	if (Math.floor(+first.version) != Math.floor(+last.version)) {
+		return false;
+	}
+
+	// we know that our columns all share a major version, but if the previous or next
+	// columns also share that major version then we aren't *exclusively* that major version
+	if (first.prevVersion != undefined && Math.floor(first.prevVersion) == Math.floor(+first.version)) {
+		return false;
+	} else if (last.nextVersion != undefined && Math.floor(last.nextVersion) == Math.floor(+last.version)) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
 function combineColumnsIntoGroup(columns) {
 	if (columns.length == 1) {
 		return columns[0];
+	} else if (columnsAreMajorVersion(columns)) {
+		return {
+            name: columns[0].name,
+            version: '' + Math.floor(columns[0].version) + '.x',
+            icon: columns[0].icon,
+            features: columns[0].features
+        };
 	} else if (columns.length == 2 && !columns[columns.length - 1].isNewest) {
         var versions = columns.map(function (c) { return c.version; }).join(", ");
 
