@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import browserFeatureProviders from './featureProviders';
-import { browsers } from './browsers';
+import { browsers, parseBrowserName } from './browsers';
 import FeatureMatrixRequirements from './FeatureMatrixRequirements';
 import { pivot, groupColumns } from './columns';
 
@@ -10,7 +10,14 @@ function getBrowsers(columns) {
 	var browsers = [];
 
 	for (let c of columns) {
-		if (browsers.length == 0 || browsers[browsers.length - 1].name != c.name) {
+		if (c.isYourColumn) {
+			browsers.push({
+				name: c.name,
+				icon: c.icon,
+				isYourBrowser: true,
+				span: 1
+			});
+		} else if (browsers.length == 0 || browsers[browsers.length - 1].name != c.name || browsers[browsers.length - 1].isYourBrowser) {
 			browsers.push({
 				name: c.name,
 				icon: c.icon,
@@ -35,12 +42,15 @@ class FeatureMatrix {
 		unsupportedText = '-',
 		unknownText = '?',
 		featureColumnLabel = 'Feature',
-		pluginRequirementGenerator = (plugin, version) => `Requires the installation of ${plugin} ${version}` 
+		pluginRequirementGenerator = (plugin, version) => `Requires the installation of ${plugin} ${version}`,
+		browser = null,
+		version = null
 	} = {}) {
 		this.mountpoint = $(mountpoint);
 		Object.assign(this, { 
 			requirements, supportedText, unsupportedText, unknownText, 
-			featureColumnLabel, pluginRequirementGenerator, partialText
+			featureColumnLabel, pluginRequirementGenerator, partialText,
+			browser, version
 		});
 
 		requirements.onLoad((r) => {
@@ -59,7 +69,30 @@ class FeatureMatrix {
 			columns = columns.concat(cols);
 		});
 
+		// hunt for a column that matches the user's browser (if we have one)
+		let yourColumn = null;
+		if (this.browser && this.version) {
+			let parsed = parseBrowserName(this.browser);
+			if (parsed) {
+				for (let col of columns) {
+					if (col.key != parsed) {
+						continue;
+					}
+
+					if (col.version == '' + this.version) {
+						yourColumn = col;
+						break;
+					}
+				}
+			}
+		}
+
 		columns = groupColumns(columns);
+
+		if (yourColumn) {
+			yourColumn.isYourColumn = true;
+			columns.unshift(yourColumn);
+		}
 
 		let rows = pivot(columns, this.requirements.features.length);
 
@@ -73,11 +106,23 @@ class FeatureMatrix {
 		browserHeaderRow.append('<th rowspan="2" class="feature">' + this.featureColumnLabel + "</th>");
 
 		getBrowsers(columns).forEach((b) => {
-			browserHeaderRow.append('<th colspan="' + b.span + '" class="browser"><img src="' + b.icon + '" alt="" /><br />' + b.name.replace(/\s+/g, '<br />') + "</th>")
+			if (!b.isYourBrowser) {
+				browserHeaderRow.append('<th colspan="' + b.span + '" class="browser"><img src="' + b.icon + '" alt="" /><br />' + b.name.replace(/\s+/g, '<br />') + "</th>")
+			} else {
+				browserHeaderRow.append('<th colspan="' + b.span + '" class="browser yours"><img src="' + b.icon + '" alt="" /><br />Your Browser<br />(' + b.name.replace(/\s+/g, '<br />') + ")</th>")
+				browserHeaderRow.append('<th colspan="1" class="browser filler" />')
+			}
 		});
 
 		// the image is purely decorative, so we use an empty alt="" attribute
-		columns.forEach(col => versionHeaderRow.append('<th class="version">' + col.version + "</th>"));
+		columns.forEach((col) => {
+			if (col.isYourColumn) {
+				versionHeaderRow.append('<th class="version yours">' + col.version + "</th>");
+				versionHeaderRow.append('<th class="version filler"/>');
+			} else {
+				versionHeaderRow.append('<th class="version">' + col.version + "</th>");
+			}
+		});
 
 		table.append(header);
 
@@ -158,7 +203,7 @@ class FeatureMatrix {
 			}
 		};
 
-		rows.forEach((row) => {
+		rows.forEach((row, i) => {
 			let tr = $("<tr>");
 
 			//let common = getCommonSuperscrips(row);
@@ -167,22 +212,35 @@ class FeatureMatrix {
 			tr.append('<td class="feature"><span>' + row.feature + '</span>' + renderSuperscripts(Object.keys(common), {}) + "</td>");
 
 			row.support.forEach((s) => {
+				let yoursClass = "";
+				if (s.isYours) {
+					yoursClass = " yours";
+
+					if (i == rows.length - 1) {
+						yoursClass = " yours last";
+					}
+				}
+
 				switch (s.support) {
 					case 'supported':
-						tr.append('<td class="support supported"><span>' + this.supportedText + "</span>" + renderSuperscripts(s, common) + "</td>");
+						tr.append('<td class="support supported' + yoursClass + '"><span>' + this.supportedText + "</span>" + renderSuperscripts(s, common) + "</td>");
 						break;
 
 					case 'partial':
-						tr.append('<td class="support partial"><span>' + this.partialText + "</span>" + renderSuperscripts(s, common) + "</td>");
+						tr.append('<td class="support partial' + yoursClass + '"><span>' + this.partialText + "</span>" + renderSuperscripts(s, common) + "</td>");
 						break;
 
 					case 'unsupported':
-						tr.append('<td class="support unsupported"><span>' + this.unsupportedText + "</span>" + renderSuperscripts(s, common) + "</td>");
+						tr.append('<td class="support unsupported' + yoursClass + '"><span>' + this.unsupportedText + "</span>" + renderSuperscripts(s, common) + "</td>");
 						break;
 
 					default:
-						tr.append('<td class="support unknown"><span>' + this.unknownText + "</span>" + renderSuperscripts(s, common) + "</td>");
+						tr.append('<td class="support unknown' + yoursClass + '"><span>' + this.unknownText + "</span>" + renderSuperscripts(s, common) + "</td>");
 						break;
+				}
+
+				if (s.isYours) {
+					tr.append('<td class="filler" />');
 				}
 			});
 

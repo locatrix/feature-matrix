@@ -38,6 +38,6 @@ module.exports = {
 	},
 
     plugins: [
-        new ExtractTextPlugin("[name].css")
+        new ExtractTextPlugin("FeatureMatrix.css")
     ]
 };

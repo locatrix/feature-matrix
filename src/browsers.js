@@ -60,6 +60,7 @@ export const browsers = {
 		'shortName': 'iOS',
 		'matches': [
 			/^ios_saf$/i,
+			/^mobile safari$/i
 		]
 	},
 	'android-browser': {

@@ -6,7 +6,13 @@ export function pivot(columns, numRows) {
 		var featureSupport = [];
 
 		columns.forEach(function (column) {
-			featureSupport.push(column.features[i].support);
+			let support = JSON.parse(JSON.stringify(column.features[i].support))
+
+			if (column.isYourColumn) {
+				support.isYours = true;
+			}
+
+			featureSupport.push(support);
 		});
 
 		rows.push({
