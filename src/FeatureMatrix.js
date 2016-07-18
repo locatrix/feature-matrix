@@ -82,9 +82,12 @@ class FeatureMatrix {
 					// we always go in lowest to highest version order, so we can safely do
 					// a greater than or equal comparison to catch minor versions that
 					// don't have identical strings
+					//
+					// note that we don't break from the loop as we want to handle the
+					// *last* version that's less than or equal to a column's version,
+					// not the first one
 					if (this.version >= parseFloat(col.version)) {
 						yourColumn = col;
-						break;
 					}
 				}
 			}
