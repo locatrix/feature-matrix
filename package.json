@@ -1,10 +1,10 @@
 {
   "name": "feature-matrix",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A library for displaying a product's browser version requirements based on the underlying features",
   "author": "Concept Safety Systems",
   "license": "MIT",
-  "main": "src/FeatureMatrix.js",
+  "main": "dist/FeatureMatrix.js",
   "scripts": {
     "prepublish": "webpack --config=webpack.config.prod.js",
     "test": "mocha --compilers js:babel-core/register",
