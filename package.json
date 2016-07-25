@@ -1,6 +1,6 @@
 {
   "name": "feature-matrix",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "A library for displaying a product's browser version requirements based on the underlying features",
   "author": "Concept Safety Systems",
   "license": "MIT",

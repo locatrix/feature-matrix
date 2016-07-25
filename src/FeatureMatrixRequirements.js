@@ -24,7 +24,7 @@ export default class FeatureMatrixRequirements {
 
 		++this.numLookups;
 		$.ajax({
-			url: 'http://cdn.rawgit.com/Fyrd/caniuse/master/sample-data.json',
+			url: 'https://cdn.rawgit.com/Fyrd/caniuse/master/sample-data.json',
 			error: (xhr, textStatus, errorThrown) => {
 				throw new Error('failed to lookup browsers');
 			},

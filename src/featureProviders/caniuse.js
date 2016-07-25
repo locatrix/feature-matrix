@@ -5,7 +5,7 @@ export default function caniuseProvider(featureName, onComplete) {
 	console.log('caniuse looking up', featureName);
 
 	xhr({
-		uri: 'http://cdn.rawgit.com/Fyrd/caniuse/master/features-json/' + featureName + '.json',
+		uri: 'https://cdn.rawgit.com/Fyrd/caniuse/master/features-json/' + featureName + '.json',
 		useXDR: true
 	}, function (err, resp, body) {
 		if (err) {
