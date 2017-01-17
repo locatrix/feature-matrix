@@ -64,7 +64,7 @@ export const browsers = {
 		]
 	},
 	'android-browser': {
-		'icon': 'http://cdn.rawgit.com/alrra/browser-logos/master/android/android_128x128.png',
+		'icon': 'http://cdn.rawgit.com/alrra/browser-logos/master/src/android/android_128x128.png',
 		'name': 'Android Browser',
 		'shortName': 'Android Browser',
 		'matches': [
