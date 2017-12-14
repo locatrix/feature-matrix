@@ -2,7 +2,7 @@ import parseProductVersionString from './parseProductVersionString';
 
 export const browsers = {
 	'chrome': {
-		'icon': 'https://www.browserfeatures.io/images/chrome/chrome_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_128x128.png',
 		'name': 'Google Chrome',
 		'shortName': 'Chrome',
 		'matches': [
@@ -11,7 +11,7 @@ export const browsers = {
 		'minVersion': 5
 	},
 	'ie': {
-		'icon': 'https://www.browserfeatures.io/images/internet-explorer/internet-explorer_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_128x128.png',
 		'name': 'Internet Explorer',
 		'shortName': 'IE',
 		'matches': [
@@ -20,7 +20,7 @@ export const browsers = {
 		'minVersion': 6
 	},
 	'edge': {
-		'icon': 'https://www.browserfeatures.io/images/edge/edge_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_128x128.png',
 		'name': 'Microsoft Edge',
 		'shortName': 'Edge',
 		'matches': [
@@ -29,7 +29,7 @@ export const browsers = {
 		'minVersion': 12
 	},
 	'firefox': {
-		'icon': 'https://www.browserfeatures.io/images/firefox/firefox_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_128x128.png',
 		'name': 'Mozilla Firefox',
 		'shortName': 'Firefox',
 		'matches': [
@@ -39,7 +39,7 @@ export const browsers = {
 		'minVersion': 2
 	},
 	'safari': {
-		'icon': 'https://www.browserfeatures.io/images/safari/safari_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_128x128.png',
 		'name': 'Safari',
 		'shortName': 'Safari',
 		'matches': [
@@ -47,7 +47,7 @@ export const browsers = {
 		]
 	},
 	'opera': {
-		'icon': 'https://www.browserfeatures.io/images/opera/opera_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/opera/opera_128x128.png',
 		'name': 'Opera',
 		'shortName': 'Opera',
 		'matches': [
@@ -55,7 +55,7 @@ export const browsers = {
 		]
 	},
 	'ios': {
-		'icon': 'https://www.browserfeatures.io/images/safari-ios/safari-ios_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari-ios/safari-ios_128x128.png',
 		'name': 'iOS Safari',
 		'shortName': 'iOS',
 		'matches': [
@@ -64,7 +64,7 @@ export const browsers = {
 		]
 	},
 	'android-browser': {
-		'icon': 'http://cdn.rawgit.com/alrra/browser-logos/master/src/android/android_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/archive/android/android_128x128.png',
 		'name': 'Android Browser',
 		'shortName': 'Android Browser',
 		'matches': [
@@ -72,7 +72,7 @@ export const browsers = {
 		]
 	},
 	'android-chrome': {
-		'icon': 'https://www.browserfeatures.io/images/chrome-android/chrome-android_128x128.png',
+		'icon': 'https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_128x128.png',
 		'name': 'Android Chrome',
 		'shortName': 'Android Chrome',
 		'matches': [
