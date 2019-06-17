@@ -1,10 +1,8 @@
-var path = require("path");
-var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var entries = [];
-var devtool = 'source-map';
+const path = require("path")
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
+    mode: 'development',
     devtool: 'source-map',
     entry: path.join(__dirname, "src/FeatureMatrix.js"),
 
@@ -16,28 +14,34 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 include: /\.(js|jsx)$/,
-                loaders: ["babel"],
+                use: [
+                    { loader: "babel-loader" }
+                ],
                 exclude: /node_modules/
             },
             {
                 test: /\.scss$/,
-                loader: ExtractTextPlugin.extract("style-loader", "css-loader!autoprefixer-loader!sass-loader")
+                use: [
+                    { loader: MiniCssExtractPlugin.loader },
+                    "css-loader",
+                    "postcss-loader",
+                    "sass-loader"
+                ]
             }
         ]
     },
 
     resolve: {
-		modulesDirectories: [
-			"src",
-			"node_modules"
-		],
-		extensions: ["", ".json", ".js", ".jsx"]
+		modules: ["src", "node_modules"],
+		extensions: [".json", ".js", ".jsx"]
 	},
 
     plugins: [
-        new ExtractTextPlugin("FeatureMatrix.css")
+        new MiniCssExtractPlugin({
+            filename: 'FeatureMatrix.css',
+        })
     ]
-};
+}

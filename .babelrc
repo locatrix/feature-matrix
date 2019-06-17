@@ -1,3 +1,10 @@
 {
-  "presets": ["es2015"]
+  "presets": [
+    [
+      "@babel/env",
+      {
+        "targets": "> 0.25%"
+      }
+    ]
+  ]
 }
